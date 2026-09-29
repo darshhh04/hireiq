@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: hireiq
+      POSTGRES_PASSWORD: hireiq
+      POSTGRES_DB: hireiq
+    ports: ["5432:5432"]
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hireiq"]
+      interval: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+
+  api:
+    build: ./backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    env_file: .env
+    ports: ["8000:8000"]
+    volumes: ["./backend:/app"]
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_started}
+
+  worker:
+    build: ./backend
+    command: celery -A app.celery_app.celery worker --loglevel=info
+    env_file: .env
+    volumes: ["./backend:/app"]
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_started}
+
+volumes:
+  pgdata:
