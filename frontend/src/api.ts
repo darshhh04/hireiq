@@ -35,3 +35,30 @@ export async function uploadResponse(sessionId: number, questionId: number, dura
 export async function completeSession(sessionId: number) {
   await fetch(`${API}/sessions/${sessionId}/complete`, { method: "POST" });
 }
+
+const H = { "Content-Type": "application/json" };
+
+async function j(r: Response) {
+  if (!r.ok) {
+    const body = await r.json().catch(() => ({}));
+    throw new Error(body.detail || "Request failed");
+  }
+  return r.json();
+}
+
+export const api = {
+  sessions: (page: number, sort: string) =>
+    fetch(`${API}/dashboard/sessions?page=${page}&page_size=10&sort=${sort}`).then(j),
+  sessionDetail: (id: number) => fetch(`${API}/dashboard/sessions/${id}`).then(j),
+  reportUrl: (id: number) => `${API}/dashboard/sessions/${id}/report`,
+  interviews: () => fetch(`${API}/admin/interviews`).then(j),
+  createInterview: (title: string, time_limit_sec: number) =>
+    fetch(`${API}/admin/interviews`, { method: "POST", headers: H, body: JSON.stringify({ title, time_limit_sec }) }).then(j),
+  addQuestion: (interviewId: number, text: string, question_type: string) =>
+    fetch(`${API}/admin/interviews/${interviewId}/questions`, { method: "POST", headers: H, body: JSON.stringify({ text, question_type }) }).then(j),
+  deleteQuestion: (id: number) => fetch(`${API}/admin/questions/${id}`, { method: "DELETE" }).then(j),
+  rubrics: () => fetch(`${API}/admin/rubrics`).then(j),
+  rubric: (name: string) => fetch(`${API}/admin/rubrics/${name}`).then(j),
+  saveRubric: (name: string, yaml_text: string) =>
+    fetch(`${API}/admin/rubrics/${name}`, { method: "PUT", headers: H, body: JSON.stringify({ yaml_text }) }).then(j),
+};

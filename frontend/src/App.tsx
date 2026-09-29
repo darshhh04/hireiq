@@ -2,7 +2,7 @@ import { useState } from "react";
 import InterviewSession from "./InterviewSession";
 import { getQuestions, startSession, type InterviewData } from "./api";
 
-const INTERVIEW_ID = 1;
+const INTERVIEW_ID = Number(new URLSearchParams(window.location.search).get("interview")) || 1;
 
 export default function App() {
   const [stage, setStage] = useState<"start" | "interview" | "done">("start");
