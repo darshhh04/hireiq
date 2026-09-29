@@ -13,7 +13,7 @@ class Interview(Base):
     __tablename__ = "interviews"
     id = Column(Integer, primary_key=True)
     title = Column(String, nullable=False)
-    rubric_file = Column(String)            # path to YAML rubric
+    rubric_file = Column(String)           
     time_limit_sec = Column(Integer, default=120)
     created_at = Column(DateTime, default=datetime.utcnow)
 
@@ -22,7 +22,7 @@ class Question(Base):
     id = Column(Integer, primary_key=True)
     interview_id = Column(Integer, ForeignKey("interviews.id"), nullable=False)
     text = Column(Text, nullable=False)
-    question_type = Column(String, default="technical")  # technical / behavioral
+    question_type = Column(String, default="technical") 
     order_index = Column(Integer, default=0)
 
 class InterviewSession(Base):
@@ -40,7 +40,7 @@ class Response(Base):
     session_id = Column(Integer, ForeignKey("sessions.id"), nullable=False)
     question_id = Column(Integer, ForeignKey("questions.id"), nullable=False)
     transcript = Column(Text)
-    status = Column(String, default="pending")  # pending/transcribing/done/failed
+    status = Column(String, default="pending")  
     duration_sec = Column(Float)
 
 class Evaluation(Base):
@@ -59,6 +59,6 @@ class Report(Base):
     id = Column(Integer, primary_key=True)
     session_id = Column(Integer, ForeignKey("sessions.id"), nullable=False)
     overall_score = Column(Float)
-    recommendation = Column(String)   # Proceed / Hold / Reject
+    recommendation = Column(String)   
     pdf_path = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)

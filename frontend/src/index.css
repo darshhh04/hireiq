@@ -1,0 +1,5 @@
+body { font-family: system-ui, sans-serif; background: #f4f5f7; margin: 0; }
+.card { max-width: 520px; margin: 60px auto; background: #fff; padding: 28px; border-radius: 10px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+input, button { padding: 10px; font-size: 16px; }
+button { cursor: pointer; }
+.timer { font-size: 32px; font-weight: bold; text-align: center; }
