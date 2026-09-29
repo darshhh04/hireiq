@@ -1,0 +1,17 @@
+question_type: technical
+criteria:
+  - name: technical_accuracy
+    weight: 0.4
+    description: Correctness of the technical facts and concepts stated.
+    strong: Precise, correct explanation using proper terminology.
+    weak: Vague, incorrect, or missing key concepts.
+  - name: depth
+    weight: 0.3
+    description: Level of detail, reasoning, and use of examples.
+    strong: Explains why and how, gives a concrete example or trade-off.
+    weak: Only a surface-level definition.
+  - name: communication
+    weight: 0.3
+    description: Clarity and logical structure of the answer.
+    strong: Organized, easy to follow, stays on topic.
+    weak: Rambling, disorganized, or off-topic.

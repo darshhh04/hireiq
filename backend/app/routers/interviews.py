@@ -84,3 +84,29 @@ def get_response(response_id: int, db: Session = Depends(get_db)):
     if not r:
         raise HTTPException(404, "Response not found")
     return {"id": r.id, "status": r.status, "transcript": r.transcript, "segments": r.segments}
+
+@router.get("/sessions/{session_id}/results")
+def session_results(session_id: int, db: Session = Depends(get_db)):
+    rows = (
+        db.query(models.Response, models.Question, models.Evaluation)
+        .join(models.Question, models.Response.question_id == models.Question.id)
+        .outerjoin(models.Evaluation, models.Evaluation.response_id == models.Response.id)
+        .filter(models.Response.session_id == session_id)
+        .order_by(models.Question.order_index)
+        .all()
+    )
+    return [
+        {
+            "response_id": r.id,
+            "question": q.text,
+            "status": r.status,
+            "transcript": r.transcript,
+            "score": e.overall_score if e else None,
+            "criteria_scores": e.criteria_scores if e else None,
+            "feedback": e.feedback if e else None,
+            "sentiment": e.sentiment if e else None,
+            "confidence": e.confidence_score if e else None,
+            "keywords": e.keywords if e else None,
+        }
+        for r, q, e in rows
+    ]

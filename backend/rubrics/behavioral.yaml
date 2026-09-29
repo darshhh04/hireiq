@@ -1,0 +1,17 @@
+question_type: behavioral
+criteria:
+  - name: relevance
+    weight: 0.3
+    description: Answer addresses the question with a specific real situation.
+    strong: A specific, relevant example with clear context.
+    weak: Generic or hypothetical answer with no real example.
+  - name: ownership
+    weight: 0.4
+    description: Actions the candidate personally took and the result achieved.
+    strong: Clear personal actions and a measurable outcome or lesson learned.
+    weak: Talks only about the team or gives no outcome.
+  - name: communication
+    weight: 0.3
+    description: Clarity and logical structure of the answer.
+    strong: Organized, easy to follow, stays on topic.
+    weak: Rambling, disorganized, or off-topic.
