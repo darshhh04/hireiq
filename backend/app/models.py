@@ -42,6 +42,7 @@ class Response(Base):
     transcript = Column(Text)
     status = Column(String, default="pending")  
     duration_sec = Column(Float)
+    segments = Column(JSON)
 
 class Evaluation(Base):
     __tablename__ = "evaluations"

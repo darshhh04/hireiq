@@ -5,6 +5,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from app.database import get_db
 from app import models
+from app.celery_app import celery
 
 router = APIRouter()
 
@@ -64,6 +65,7 @@ def upload_response(
     db.commit()
     with open(os.path.join(AUDIO_DIR, f"{response.id}.webm"), "wb") as f:
         f.write(audio.file.read())
+    celery.send_task("app.tasks.transcribe_response", args=[response.id])
     return {"response_id": response.id, "status": "pending"}
 
 @router.post("/sessions/{session_id}/complete")
@@ -75,3 +77,10 @@ def complete_session(session_id: int, db: Session = Depends(get_db)):
     session.completed_at = datetime.utcnow()
     db.commit()
     return {"status": "completed"}
+
+@router.get("/responses/{response_id}")
+def get_response(response_id: int, db: Session = Depends(get_db)):
+    r = db.get(models.Response, response_id)
+    if not r:
+        raise HTTPException(404, "Response not found")
+    return {"id": r.id, "status": r.status, "transcript": r.transcript, "segments": r.segments}
